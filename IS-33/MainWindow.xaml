@@ -7,9 +7,53 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="120" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid
+            Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button
+                Grid.Column="0"
+                Content="Обновить"
+                Name="refreshBtn" 
+                Click="refreshBtn_Click">
+            </Button>
+
+            <Button
+                Grid.Column="1"
+                Content="Добавить"
+                Name="addBtn" Click="addBtn_Click">
+            </Button>
+
+            <Button
+               Grid.Column="2"
+               Content="Удалить"
+               Name="delBtn" Click="delBtn_Click">
+            </Button>
+        </Grid>
+
         <DataGrid
+            AutoGenerateColumns="False"
+            Grid.Row="1"
+            IsReadOnly="True"
             ItemsSource="{Binding Students}"
             Name="mainDG">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Header="ФИО"
+                    Binding="{Binding Path=Name}">
+                </DataGridTextColumn>
+                <DataGridTextColumn
+                    Header="Курс"
+                    Binding="{Binding Path=Course}">
+                </DataGridTextColumn>
+            </DataGrid.Columns>
             
         </DataGrid>
     </Grid>
