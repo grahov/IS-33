@@ -35,12 +35,14 @@ namespace IS_33.ViewModel
         {
             Students = new List<Student>();
 
+            Student = new Student();
+
             LoadStudents();
         }
 
         public void LoadStudents()
         {
-            Student = new Student();
+            
 
             Students.Clear();
 
