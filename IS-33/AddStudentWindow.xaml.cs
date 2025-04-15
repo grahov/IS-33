@@ -33,9 +33,9 @@ namespace IS_33
             DataContext = student;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var result = ((this.Owner as MainWindow).DataContext as MainVm).AddStudent();
+            var result = await ((this.Owner as MainWindow).DataContext as MainVm).AddStudent(DataContext as Student);
 
             if (!result)
             {

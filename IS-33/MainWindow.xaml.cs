@@ -36,16 +36,16 @@ namespace IS_33
 
         private void addBtn_Click(object sender, RoutedEventArgs e)
         {
-            var addWindow = new AddStudentWindow((DataContext as MainVm).Student);
+            var addWindow = new AddStudentWindow(null);
 
             addWindow.Owner = this;
 
             addWindow.ShowDialog();
         }
 
-        private void delBtn_Click(object sender, RoutedEventArgs e)
+        private async void delBtn_Click(object sender, RoutedEventArgs e)
         {
-            var result = (DataContext as MainVm).DeleteStudent((mainDG.SelectedItem as Student).Id);
+            var result = await (DataContext as MainVm).DeleteStudent((mainDG.SelectedItem as Student).Id);
 
             if (!result)
             {
@@ -53,6 +53,16 @@ namespace IS_33
             }
 
             MessageBox.Show("Объект успешно удалён.", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+
+        private void editBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var addWindow = new AddStudentWindow((DataContext as MainVm).SelectedStudent);
+
+            addWindow.Owner = this;
+
+            addWindow.ShowDialog();
         }
     }
 }

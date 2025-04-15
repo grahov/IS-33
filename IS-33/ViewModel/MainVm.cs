@@ -1,8 +1,8 @@
 ﻿using IS_33.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -11,23 +11,23 @@ namespace IS_33.ViewModel
     public class MainVm : BaseViewModel
     {
         private List<Student> _students;
-        private Student _student;
+        private Student _selectedStudent;
 
         public List<Student> Students
         {
-            get {  return _students; }
+            get { return _students; }
             set
             {
                 SetPropertyChanged(ref _students, value);
             }
         }
 
-        public Student Student
+        public Student SelectedStudent
         {
-            get { return _student; }
+            get { return _selectedStudent; }
             set
             {
-                SetPropertyChanged(ref _student, value);
+                SetPropertyChanged(ref _selectedStudent, value);
             }
         }
 
@@ -35,56 +35,70 @@ namespace IS_33.ViewModel
         {
             Students = new List<Student>();
 
-            Student = new Student();
-
             LoadStudents();
         }
 
-        public void LoadStudents()
-        {
-            
-
+        public async void LoadStudents()
+        {          
             Students.Clear();
 
             using (var context = new CollegeEntities())
             {
-                Students = context.Student.ToList();
+                Students = await context.Student.ToListAsync();
             }
         }
 
-        public bool AddStudent()
+        public async Task<bool> AddStudent(Student student)
         {
             try
             {
-                using (var context = new CollegeEntities())
+                if (student.Id == 0)
                 {
-                    context.Student.Add(Student);
-                    context.SaveChanges();
+                    using (var context = new CollegeEntities())
+                    {
+                        context.Student.Add(student);
+                        await context.SaveChangesAsync();
+                    }
+
+                    LoadStudents();
+
+                    return true;
                 }
+                else
+                {
+                    using (var context = new CollegeEntities())
+                    {
+                        var forEdit = await context.Student.FirstOrDefaultAsync(stud => stud.Id == SelectedStudent.Id);
 
-                LoadStudents();
+                        forEdit.Name = SelectedStudent.Name;
+                        forEdit.Course = SelectedStudent.Course;
 
-                return true;
-            } 
+                        await context.SaveChangesAsync();
+
+                        return true;
+                    }
+                }
+            }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return false;
             }
+            
         }
 
-        public bool DeleteStudent(int id)
+        public async Task<bool> DeleteStudent(int id)
         {
             try
             {
                 using (var context = new CollegeEntities())
                 {
-                    var forDelete = context.Student.FirstOrDefault(student => student.Id == id);
+                    var forDelete = await context.Student.FirstOrDefaultAsync(student => student.Id == id);
 
                     if (forDelete != null)
                     {
                         context.Student.Remove(forDelete);
-                        context.SaveChanges();
+                        await context.SaveChangesAsync();
                     }
 
                     LoadStudents();
